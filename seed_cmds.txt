@@ -1,0 +1,21 @@
+# create the schema
+FT.CREATE subjects-set-id-1 PREFIX 1 doc: SCHEMA title TEXT SORTABLE WEIGHT 5.0 body TEXT SORTABLE url TEXT
+
+# add data to the index using the prefix notation to identify the 'doc'
+hset doc:1 title "hello world" body "lorem ipsum" url "http://redis.io"
+hset doc:2 title "boring stuff" body "mising" url "http://redis.io"
+hset doc:3 title "another day" body "full metal jacket" url "http://redis.io"
+
+# Querying
+#
+# search for doc with lorem in it
+# FT.SEARCH subjects-set-id-1 lorem LIMIT 0 2
+#
+# prefix searching
+# FT.SEARCH subjects-set-id-1 mis* LIMIT 0 2
+#
+# find all the docs
+# FT.SEARCH subjects-set-id-1 * LIMIT 0 10
+#
+# find all the docs and sort by body field
+FT.SEARCH subjects-set-id-1 * SORTBY body ASC LIMIT 0 3

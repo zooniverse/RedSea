@@ -1,0 +1,5 @@
+FROM ruby:2.6
+
+WORKDIR /app
+
+RUN gem install pry && gem cleanup

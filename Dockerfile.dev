@@ -2,4 +2,12 @@ FROM ruby:2.6
 
 WORKDIR /app
 
-RUN gem install pry && gem cleanup
+ADD ./Gemfile /app/
+ADD ./Gemfile.lock /app/
+
+RUN bundle config --global jobs `cat /proc/cpuinfo | grep processor | wc -l | xargs -I % expr % - 1` \
+    && bundle install
+
+ADD ./ /app
+
+CMD ["bundle", "exec", "puma", "-C", "puma.rb"]

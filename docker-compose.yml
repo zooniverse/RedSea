@@ -11,10 +11,16 @@ services:
       - ./:/usr/src/code
     links:
       - redis-search:redis
-  convert-script:
+  search_api:
+    image: search-app:latest
     build:
       context: .
       dockerfile: Dockerfile.dev
-    command: bash
+    environment:
+      - "RACK_ENV=development"
+    ports:
+      - "3000:80"
     volumes:
       - ./:/app
+    links:
+      - redis-search:redis

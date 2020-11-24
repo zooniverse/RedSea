@@ -26,7 +26,7 @@ class SearchApp < Sinatra::Base
 
         # https://github.com/npezza93/redi_search#query-level-clauses
         sort_order = (%i[asc desc] & sort_order_param).first || :asc
-        clauses[:sortby] = [sort_field, sort_order_param]
+        clauses[:sortby] = [sort_field, sort_order]
       end
       if (limit = params['limit'])
         # limit is offset, num

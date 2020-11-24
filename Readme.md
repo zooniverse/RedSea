@@ -36,7 +36,7 @@ We only support running via Docker and Docker Compose, use those.
 
 + all fields with a term
 
-  +http://localhost:3000/search/15582?filter_field=record&sort_field=title&sort_order=asc&limit=1
+  + http://localhost:3000/search/15582?filter_field=record&sort_field=title&sort_order=asc&limit=1
 
 + all fields with term and wildcard
 

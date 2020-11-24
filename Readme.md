@@ -26,18 +26,18 @@ We only support running via Docker and Docker Compose, use those.
 
 ## Search API Syntax
 
-### a field (title) with a term
++ a field (title) with a term
 
   + http://localhost:3000/search/15582?filter_field=@title:oppression&sort_field=title&sort_order=asc&limit=5
 
-### a field (title) with term and wildcard
++ a field (title) with term and wildcard
 
   + http://localhost:3000/search/15582?filter_field=@title:sam*&sort_field=title&sort_order=asc&limit=50
 
-### all fields with a term
++ all fields with a term
 
   +http://localhost:3000/search/15582?filter_field=record&sort_field=title&sort_order=asc&limit=1
 
-### all fields with term and wildcard
++ all fields with term and wildcard
 
   + http://localhost:3000/search/15582?filter_field=sam*&sort_field=title&sort_order=asc&limit=10

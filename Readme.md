@@ -4,9 +4,11 @@ We only support running via Docker and Docker Compose, use those.
 
 ## Create the seed data
 
-1. Convert a subject export file to redis FT search index cmds
+1. Download the subject data export from [ASM data exports lab page](https://www.zooniverse.org/lab/4973/data-exports)
+    * Add the file to the `./subject_data/` directory
+2. Convert a subject export file to redis FT search index cmds
     * `docker-compose run --rm search_api bash`
-2. From within the above container, run the conversion script
+3. From within the above container, run the conversion script
     * `ruby convert_subject_export_to_redis_cmds.rb -i subject_data/anti-slavery-manuscripts-subjects.csv -s 15582`
 
 ## Usage

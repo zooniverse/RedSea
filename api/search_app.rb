@@ -7,7 +7,6 @@ require 'sinatra'
 require 'sinatra/json'
 
 class SearchApp < Sinatra::Base
-
   configure :production, :staging, :development do
     enable :logging
     # setup redis search gem
@@ -25,7 +24,7 @@ class SearchApp < Sinatra::Base
       if (sort_field = params['sort_field'])
         sort_order_param = [params['sort_order']&.to_sym].compact
 
-      # https://github.com/npezza93/redi_search#query-level-clauses
+        # https://github.com/npezza93/redi_search#query-level-clauses
         sort_order = (%i[asc desc] & sort_order_param).first || :asc
         clauses[:sortby] = [sort_field, sort_order_param]
       end

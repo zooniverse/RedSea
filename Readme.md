@@ -26,6 +26,15 @@ We only support running via Docker and Docker Compose, use those.
 
 ## Search API Syntax
 
++ all records but sorted on a field
+
+  + http://localhost:3000/search/15582?sort_field=title&sort_order=asc
+  + http://localhost:3000/search/15582?sort_field=title&sort_order=desc
+
++ only the first 5 records
+
+  + http://localhost:3000/search/15582?limit=5
+
 + a field (title) with a term
 
   + http://localhost:3000/search/15582?filter_field=@title:oppression&sort_field=title&sort_order=asc&limit=5

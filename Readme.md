@@ -23,3 +23,21 @@ We only support running via Docker and Docker Compose, use those.
     * `grep -Ev "^#|^$" /usr/src/code/seed_cmds.txt | redis-cli -h redis`
 5. Run the API over the redis FT search index
     * `docker-compose run --rm --service-ports search_api`
+
+## Search API Syntax
+
+### a field (title) with a term
+
+  + http://localhost:3000/search/15582?filter_field=@title:oppression&sort_field=title&sort_order=asc&limit=5
+
+### a field (title) with term and wildcard
+
+  + http://localhost:3000/search/15582?filter_field=@title:sam*&sort_field=title&sort_order=asc&limit=50
+
+### all fields with a term
+
+  +http://localhost:3000/search/15582?filter_field=record&sort_field=title&sort_order=asc&limit=1
+
+### all fields with term and wildcard
+
+  + http://localhost:3000/search/15582?filter_field=sam*&sort_field=title&sort_order=asc&limit=10

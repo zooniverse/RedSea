@@ -19,6 +19,7 @@ services:
       dockerfile: Dockerfile.dev
     environment:
       - "RACK_ENV=development"
+      - "MAX_THREADS=1"
     ports:
       - "3000:80"
     volumes:

@@ -2,6 +2,7 @@ version: '3'
 services:
   redis-search:
     image: redislabs/redisearch:2.0.2
+    command: ['redis-server', '--loadmodule', '/usr/lib/redis/modules/redisearch.so', '--save', '900', '1', '--save', '300', '10', '--save', '60', '10000']
     ports:
       - "6379:6379"
   redis-bash:

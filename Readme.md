@@ -16,37 +16,41 @@ We only support running via Docker and Docker Compose, use those.
 1. Run a redis cli and ensure the redis search container is started
     * `docker-compose run --rm redis-bash redis-cli -h redis`
 2. Load the redis ft search data constructed in the seed rdata
-    * `docker-compose run --rm redis-bash cat /usr/src/code/redis_search_index.txt | redis-cli -h redis`
-3. From within the above container, seed the search index with data from above
-    * `cat /usr/src/code/redis_search_index.txt | redis-cli -h redis`
-4. From within the above container, seed the example redis FT search index data and cmds
-    * `grep -Ev "^#|^$" /usr/src/code/seed_cmds.txt | redis-cli -h redis`
+    * `docker-compose run --rm redis-bash bash -c "cat /usr/src/code/redis_search_index.txt | redis-cli -h redis"`
+
+    * Alternatively launch a bash shell in the redis container
+      * `docker-compose run --rm redis-bash bash`
+
+        Seed the search index with data from above
+          * `cat /usr/src/code/redis_search_index.txt | redis-cli -h redis`
+          * `exit`
+
 5. Run the API over the redis FT search index
     * `docker-compose run --rm --service-ports search_api`
 
 ## Search API Syntax
 
-+ all records but sorted on a field
+* all records but sorted on a field
 
-  + http://localhost:3000/search/15582?sort_field=title&sort_order=asc
-  + http://localhost:3000/search/15582?sort_field=title&sort_order=desc
+  * http://localhost:3000/search/15582?sort_field=title&sort_order=asc
+  * http://localhost:3000/search/15582?sort_field=title&sort_order=desc
 
-+ only the first 5 records
+* only the first 5 records
 
-  + http://localhost:3000/search/15582?limit=5
+  * http://localhost:3000/search/15582?limit=5
 
-+ a field (title) with a term
+* a field (title) with a term
 
-  + http://localhost:3000/search/15582?filter_field=@title:oppression&sort_field=title&sort_order=asc&limit=5
+  * http://localhost:3000/search/15582?filter_field=@title:oppression&sort_field=title&sort_order=asc&limit=5
 
-+ a field (title) with term and wildcard
+* a field (title) with term and wildcard
 
-  + http://localhost:3000/search/15582?filter_field=@title:sam*&sort_field=title&sort_order=asc&limit=50
+  * http://localhost:3000/search/15582?filter_field=@title:sam*&sort_field=title&sort_order=asc&limit=50
 
-+ all fields with a term
+* all fields with a term
 
-  + http://localhost:3000/search/15582?filter_field=record&sort_field=title&sort_order=asc&limit=1
+  * http://localhost:3000/search/15582?filter_field=record&sort_field=title&sort_order=asc&limit=1
 
-+ all fields with term and wildcard
+* all fields with term and wildcard
 
-  + http://localhost:3000/search/15582?filter_field=sam*&sort_field=title&sort_order=asc&limit=10
+  * http://localhost:3000/search/15582?filter_field=sam*&sort_field=title&sort_order=asc&limit=10

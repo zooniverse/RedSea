@@ -18,6 +18,8 @@ GEM
     puma (5.0.4)
       nio4r (~> 2.0)
     rack (2.2.3)
+    rack-cors (1.0.6)
+      rack (>= 1.6.0)
     rack-protection (2.1.0)
       rack
     rainbow (3.0.0)
@@ -49,7 +51,6 @@ GEM
       rack-protection (= 2.1.0)
       sinatra (= 2.1.0)
       tilt (~> 2.0)
-    sinatra-cross_origin (0.4.0)
     tilt (2.0.10)
     unicode-display_width (1.7.0)
 
@@ -60,12 +61,12 @@ DEPENDENCIES
   connection_pool
   pry
   puma
+  rack-cors
   redis
   redisearch-rb
   rubocop
   sinatra
   sinatra-contrib
-  sinatra-cross_origin
 
 BUNDLED WITH
    1.17.2

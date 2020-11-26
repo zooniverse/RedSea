@@ -2,29 +2,33 @@
 
 require 'connection_pool'
 require 'pry' if %w[development test].include?(ENV['RACK_ENV'])
+require 'rack/cors'
 require 'redisearch-rb'
 require 'sinatra'
 require 'sinatra/json'
-require 'sinatra/cross_origin'
 
 class SearchApp < Sinatra::Base
-  register Sinatra::CrossOrigin
-
   configure :production, :staging, :development do
     enable :logging
     # setup global redis connection pool (match num of puma server threads)
     # for use with the search client in the request handlers
     max_threads = ENV.fetch('MAX_THREADS', 2).to_i
     set :redis, ConnectionPool.new(size: max_threads) { Redis.new(url: ENV.fetch('REDIS_URL', 'redis://redis/0')) }
-    set :cors_origins, ENV.fetch('CORS_ORIGINS', '([a-z0-9-]+\.zooniverse\.org)')
   end
 
-  get '/search/:subject_set_id' do
-    cross_origin(
-      allow_origin: %r{^https?://#{settings.cors_origins}(:\d+)?$},
-      allow_methods: [:get]
-    )
+  # setup CORS for use across zooniverse / local dev domains
+  use Rack::Cors do
+    cors_origins = ENV.fetch('CORS_ORIGINS', '([a-z0-9-]+\.zooniverse\.org)')
+    allow do
+      origins %r{^https?://#{cors_origins}(:\d+)?$}
+      resource '*', headers: :any, methods: :get
+    end
+  end
 
+  # CORS preflight options request handler
+  options '/search/:subject_set_id' { 200 }
+  # search route for redis FT index
+  get '/search/:subject_set_id' do
     index_key = "set-id-#{params['subject_set_id']}"
 
     settings.redis.with do |redis|

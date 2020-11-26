@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'connection_pool'
 require 'pry' if %w[development test].include?(ENV['RACK_ENV'])
 require 'rack/cors'
 require_relative 'search_client'
@@ -11,10 +10,6 @@ module Api
   class SearchApp < Sinatra::Base
     configure :production, :staging, :development do
       enable :logging
-      # setup global redis connection pool (match num of puma server threads)
-      # for use with the search client in the request handlers
-      max_threads = ENV.fetch('MAX_THREADS', 2).to_i
-      set :redis, ConnectionPool.new(size: max_threads) { Redis.new(url: ENV.fetch('REDIS_URL', 'redis://redis/0')) }
     end
 
     # setup CORS for use across zooniverse / local dev domains
@@ -34,14 +29,11 @@ module Api
     get '/search/:subject_set_id' do
       index_key = "set-id-#{params['subject_set_id']}"
 
-      search_client = SearchClient.new(settings.redis, params)
+      search_client = SearchClient.new(params)
       search_client.query_ft_index(index_key)
 
-      if search_client.ok?
-        json search_client.results
-      else
-        [404, json({ error: search_client.error_message })]
-      end
+      # serailize the response
+      [search_client.status, json(search_client.results)]
     end
   end
 end

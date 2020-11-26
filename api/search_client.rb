@@ -1,40 +1,50 @@
 # frozen_string_literal: true
 
+require 'connection_pool'
 require 'redisearch-rb'
 
 module Api
   class SearchClient
-    attr_reader *%i[redis params ok results error_message]
+    attr_reader :redis, :params, :status, :results, :error_message
 
-    def initialize(redis, params)
-      @redis = redis
+    def self.connection_pool_size
+      ENV.fetch('MAX_THREADS', 2).to_i
+    end
+
+    def self.redis_url
+      ENV.fetch('REDIS_URL', 'redis://redis/0')
+    end
+
+    # setup global redis connection pool (match num of puma server threads)
+    # for use with the search client in the request handlers
+    def self.redis_connection_pool
+      @redis_connection_pool ||= ConnectionPool.new(size: connection_pool_size) {
+        Redis.new(url: redis_url)
+      }
+    end
+
+    def initialize(params)
       @params = params
-      @ok = true
+      @status = 200
       @results = nil
       @error_message = nil
     end
 
-    # this can be extracted to a search class
-    # to allow us to switch the backend search db / client out
     def query_ft_index(index_key)
-      # use the redis connection pool
-      redis.with do |redis_conn|
+      self.class.redis_connection_pool.with do |redis_conn|
         redisearch_client = RediSearch.new(index_key, redis_conn)
 
-        # query the redis db
+        # run the search query against the redis FT index
         @results = redisearch_client.search(filter, clauses)
         true
       end
     rescue Redis::CommandError => e
-      @ok = false
       # handle errors like index doesn't exist
-      # respond with the error msg
-      @error_message = e.message
+      #  here we can expand on the status code
+      #  to handle different failure modes (error classes)
+      @status = 404
+      @results = { error: e.message }
       false
-    end
-
-    def ok?
-      ok
     end
 
     private

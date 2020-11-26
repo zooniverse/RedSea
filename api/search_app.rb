@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'connection_pool'
-require 'pry' # TODO: if APP_ENV == 'development'
+require 'pry' if %w[development test].include?(ENV['RACK_ENV'])
 require 'redisearch-rb'
 require 'sinatra'
 require 'sinatra/json'

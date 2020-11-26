@@ -37,6 +37,6 @@ class SearchApp < Sinatra::Base
       json redisearch_client.search(filter, clauses)
     end
   rescue  Redis::CommandError => e
-    [404, json({error: e.message})]
+    [404, json({ error: e.message })]
   end
 end

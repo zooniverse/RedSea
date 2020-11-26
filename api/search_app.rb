@@ -9,8 +9,9 @@ require 'sinatra/json'
 class SearchApp < Sinatra::Base
   configure :production, :staging, :development do
     enable :logging
-    # setup redis search gem
-    set :redis, ConnectionPool.new(size: 2) { Redis.new(url: ENV.fetch('REDIS_URL', 'redis://redis/0')) }
+    # setup redis search gem with a connection pool (match num of puma server threads)
+    max_threads = ENV.fetch('MAX_THREADS', 2).to_i
+    set :redis, ConnectionPool.new(size: max_threads) { Redis.new(url: ENV.fetch('REDIS_URL', 'redis://redis/0')) }
   end
 
   get '/search/:subject_set_id' do

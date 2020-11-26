@@ -51,7 +51,7 @@ File.open(redis_out_file_name, 'wb') do |out_file|
   # create a set of cmds to construct the redis search data set:
   # 1. create the FT search index
   search_index_name = "set-id-#{options.subject_set_id}"
-  search_index_create_stmt = "FT.CREATE #{search_index_name} PREFIX 1 doc: SCHEMA id TEXT SORTABLE"
+  search_index_create_stmt = "FT.CREATE #{search_index_name} PREFIX 1 doc: SCHEMA subject_id TEXT SORTABLE"
   known_metadata_fields.each do |field|
     # https://oss.redislabs.com/redisearch/Commands/#ftcreate
     search_index_create_stmt += " #{field} TEXT SORTABLE"
@@ -62,7 +62,7 @@ File.open(redis_out_file_name, 'wb') do |out_file|
   out_file.puts search_index_create_stmt
   # 2. create the index docs
   found_docs.each.with_index do |(id, doc), index|
-    add_doc_to_ft_schema_stmt = "hset doc:#{index+1} id \"#{id}\""
+    add_doc_to_ft_schema_stmt = "hset doc:#{index + 1} subject_id \"#{id}\""
     doc.each do |key, value|
       # remove illegal quote statements for redis cmds
       single_quoted_value = value.gsub('"', "'")

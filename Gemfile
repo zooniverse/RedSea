@@ -8,6 +8,7 @@ gem 'redis'
 gem 'redisearch-rb'
 gem 'sinatra'
 gem 'sinatra-contrib'
+gem 'sinatra-cross_origin'
 
 group :development, :test do
   gem 'pry'

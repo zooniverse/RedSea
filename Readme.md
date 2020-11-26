@@ -26,7 +26,7 @@ We only support running via Docker and Docker Compose, use those.
     * Should you wish to direclty query the redis db using redis-cli in redis search container
       * `docker-compose run --rm redis-bash redis-cli -h redis`
 
-        FT Search query example:
+        FT Search query example (see seed_cmds.txt):
           * `FT.SEARCH set-id-15582 * SORTBY subject_id ASC LIMIT 0 3`
           * `exit`
 

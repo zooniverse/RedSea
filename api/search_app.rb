@@ -26,15 +26,32 @@ class SearchApp < Sinatra::Base
   end
 
   # CORS preflight options request handler
-  options '/search/:subject_set_id' { 200 }
+  options '/search/:subject_set_id' do
+    200
+  end
   # search route for redis FT index
   get '/search/:subject_set_id' do
     index_key = "set-id-#{params['subject_set_id']}"
+    begin
+      search_results = search_ft_index(index_key)
+      json search_results
+    rescue Redis::CommandError => e
+      # handle errors like index doesn't exist
+      # respond with the error msg
+      [404, json({ error: e.message })]
+    end
+  end
 
+  private
+
+  def search_ft_index(index_key)
+    # use the redis connection pool
     settings.redis.with do |redis|
       redisearch_client = RediSearch.new(index_key, redis)
       # all docs search by default (add filtering later)
       filter = params['filter_field'] || '*'
+
+      # setup our search options (sort, limit etc)
       clauses = {}
       if (sort_field = params['sort_field'])
         sort_order_param = [params['sort_order']&.to_sym].compact
@@ -49,9 +66,8 @@ class SearchApp < Sinatra::Base
         clauses[:limit] = ['0', limit]
       end
 
-      json redisearch_client.search(filter, clauses)
+      # query the redis db
+      redisearch_client.search(filter, clauses)
     end
-  rescue  Redis::CommandError => e
-    [404, json({ error: e.message })]
   end
 end

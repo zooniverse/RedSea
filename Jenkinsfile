@@ -17,7 +17,7 @@ pipeline {
           def newImage = docker.build(dockerImageName)
           newImage.push()
 
-          if (BRANCH_NAME == 'master') {
+          if (BRANCH_NAME == 'main') {
             stage('Update latest tag') {
               newImage.push('latest')
             }
@@ -34,7 +34,7 @@ pipeline {
     }
 
     stage('Deploy production to Kubernetes') {
-      when { branch 'master' }
+      when { branch 'main' }
       agent any
       steps {
         sh "sed 's/__IMAGE_TAG__/${GIT_COMMIT}/g' kubernetes/deployment-production.tmpl | kubectl --context azure apply --record -f -"
@@ -45,7 +45,7 @@ pipeline {
   post {
     success {
       script {
-        if (BRANCH_NAME == 'master' || env.TAG_NAME == 'production-release') {
+        if (BRANCH_NAME == 'main') {
           slackSend (
             color: '#00FF00',
             message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",
@@ -57,7 +57,7 @@ pipeline {
 
     failure {
       script {
-        if (BRANCH_NAME == 'master' || env.TAG_NAME == 'production-release') {
+        if (BRANCH_NAME == 'main') {
           slackSend (
             color: '#FF0000',
             message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",

@@ -23,7 +23,7 @@ We only support running via Docker and Docker Compose, use those.
           * `cat /usr/src/code/redis_search_index.txt | redis-cli -h redis`
           * `exit`
 
-    * Should you wish to direclty query the redis db using redis-cli in redis search container
+    * Should you wish to directly query the redis db using redis-cli in redis search container
       * `docker-compose run --rm redis-bash redis-cli -h redis`
 
         FT Search query example (see seed_cmds.txt):
@@ -59,3 +59,31 @@ We only support running via Docker and Docker Compose, use those.
 * all fields with term and wildcard
 
   * http://localhost:3000/search/15582?filter_field=sam*&sort_field=title&sort_order=asc&limit=10
+
+## Deployment
+
+This repo will autodeploy via Jenkinsfile and Kubernetes templates.
+
+## API
+
+The API container will autobuild via Jenkinsfile
+
+## Redis Search DB
+
+Short term manual steps, until we have the redis subject set data built automatically we can automate the redis search db image deploy pipeline.
+
+More details at https://github.com/zooniverse/RedSea/issues/2
+
+Create a deployable docker Redis Search image with our search data baked in. This image will be used as a sidecar container
+
+1. Backup the redis FT search DB (previously created) to the local file system dir `./db_backup/`
+    * `docker-compose run --rm redis-bash redis-cli -h redis SAVE`
+
+2. Build a deployable docker image
+    * `docker-compose -f docker-compose-deploy.yml build`
+
+3. Tag the newly built image to push to zooniverse docker hub
+    * `docker tag redsea/redis:local-build zooniverse/redsea:redis`
+
+4. Push the build image to docker hub
+    * `docker push zooniverse/redsea:redis`

@@ -1,23 +1,28 @@
 version: '3'
 services:
+  # the actual redis search db
   redis-search:
-    image: redislabs/redisearch:2.0.2
+    image: redislabs/redisearch:2.0.4
     command: ['redis-server', '--loadmodule', '/usr/lib/redis/modules/redisearch.so', '--save', '900', '1', '--save', '300', '10', '--save', '60', '10000']
-    ports:
-      - "6379:6379"
-  redis-bash:
-    image: redislabs/redisearch:2.0.2
-    command: bash
     volumes:
       - ./db_backup:/data
+    ports:
+      - "6379:6379"
+  # use the following to get a redis search compatible cli
+  # connected to the running redis-search db above
+  redis-bash:
+    image: redislabs/redisearch:2.0.4
+    command: bash
+    volumes:
       - ./:/usr/src/code
+      - ./db_backup:/data
     links:
       - redis-search:redis
   search_api:
     image: search-app:latest
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     environment:
       CORS_ORIGINS: '(127\.0\.0\.1|localhost|[a-z0-9-]+\.zooniverse\.org)'
       MAX_THREADS: 1

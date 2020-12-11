@@ -1,0 +1,7 @@
+version: '3'
+services:
+  redis-search-db:
+    image: redsea/redis:local-build
+    build:
+      context: .
+      dockerfile: Dockerfile.redisearch

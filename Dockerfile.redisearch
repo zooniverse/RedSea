@@ -1,0 +1,3 @@
+FROM redislabs/redisearch:2.0.4
+
+ADD ./db_backup/dump.rdb /data/

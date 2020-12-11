@@ -14,7 +14,8 @@ pipeline {
         script {
           def dockerRepoName = 'zooniverse/redsea'
           def dockerImageName = "${dockerRepoName}:${GIT_COMMIT}"
-          def newImage = docker.build(dockerImageName)
+          def buildArgs = "--build-arg REVISION='${GIT_COMMIT}' ."
+          def newImage = docker.build(dockerImageName, buildArgs)
           newImage.push()
 
           if (BRANCH_NAME == 'main') {

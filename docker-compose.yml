@@ -27,6 +27,7 @@ services:
       CORS_ORIGINS: '(127\.0\.0\.1|localhost|[a-z0-9-]+\.zooniverse\.org)'
       MAX_THREADS: 1
       RACK_ENV: development
+      REVISION: 'test-revision'
     ports:
       - "3000:80"
     volumes:

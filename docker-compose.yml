@@ -9,6 +9,7 @@ services:
     image: redislabs/redisearch:2.0.2
     command: bash
     volumes:
+      - ./db_backup:/data
       - ./:/usr/src/code
     links:
       - redis-search:redis

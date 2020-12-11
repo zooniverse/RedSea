@@ -64,6 +64,8 @@ spec:
               value: "production"
             - name: MAX_THREADS
               value: "5"
+            - name: REDIS_URL
+              value: 'redis://redsea-production-redis:6379/0'
           ports:
             - containerPort: 80
 ---

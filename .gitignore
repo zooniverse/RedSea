@@ -1,3 +1,4 @@
 subject_data/*
+db_backup/*
 redis_search_index.txt
 .DS_Store

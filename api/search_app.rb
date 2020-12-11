@@ -35,5 +35,10 @@ module Api
       # serailize the response
       [search_client.status, json(search_client.results)]
     end
+
+    # healthcheck / default route
+    get '/*' do
+      json({ health: 'ok', revision: ENV['REVISION'] })
+    end
   end
 end

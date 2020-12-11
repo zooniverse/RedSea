@@ -5,7 +5,7 @@ require 'redisearch-rb'
 
 module Api
   class SearchClient
-    attr_reader :redis, :params, :status, :results, :error_message
+    attr_reader :redis, :params, :status, :results
 
     def self.connection_pool_size
       ENV.fetch('MAX_THREADS', 2).to_i
@@ -27,7 +27,6 @@ module Api
       @params = params
       @status = 200
       @results = nil
-      @error_message = nil
     end
 
     def query_ft_index(index_key)
